@@ -13,7 +13,7 @@ function Home() {
   return (
     <div
       style={{
-        minHeight: "calc(100vh - 80px)",
+        minHeight: "calc(85vh - 80px)",
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -88,7 +88,7 @@ function Home() {
           }}
         >
           <button
-            onClick={() => navigate("/services")} // direct navigation
+            onClick={() => navigate("/user/services")}
             style={{
               padding: "14px 46px",
               borderRadius: "999px",

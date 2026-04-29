@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -12,23 +11,20 @@ import Login from "./pages/user/Login";
 import Home from "./pages/user/Home";
 import ServicesCrudApp from "./pages/user/ServicesCrudApp";
 import Notifications from "./pages/user/Notifications";
-import Booking from "./components/Bookings"; // <-- New Booking page
+import Booking from "./components/Bookings";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBookings from "./pages/admin/AdminBookings";
 
 import Navbar from "./components/Navbar";
 
-/* 🔐 PrivateRoute with role check */
 const PrivateRoute = ({ children, roleRequired }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role")?.toLowerCase();
 
-  // No token → redirect to login
   if (!token) return <Navigate to="/" replace />;
 
-  // Role required but does not match → redirect to correct dashboard
-  if (roleRequired && role !== roleRequired.toLowerCase()) {
+  if (roleRequired && role !== roleRequired) {
     return role === "admin" ? (
       <Navigate to="/admin/dashboard" replace />
     ) : (
@@ -39,10 +35,10 @@ const PrivateRoute = ({ children, roleRequired }) => {
   return children;
 };
 
-/* 🧩 Layout (hide navbar only on login page) */
 const Layout = ({ children }) => {
   const location = useLocation();
   const token = localStorage.getItem("token");
+
   const isLoginPage = location.pathname === "/";
   const showNavbar = token && !isLoginPage;
 
@@ -58,10 +54,8 @@ function AppRoutes() {
   return (
     <Layout>
       <Routes>
-        {/* Login */}
         <Route path="/" element={<Login />} />
 
-        {/* 👤 User Routes */}
         <Route
           path="/user/home"
           element={
@@ -70,6 +64,16 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/user/services"
+          element={
+            <PrivateRoute roleRequired="user">
+              <ServicesCrudApp />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/user/notifications"
           element={
@@ -78,6 +82,7 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/user/booking"
           element={
@@ -87,10 +92,6 @@ function AppRoutes() {
           }
         />
 
-        {/* 🌟 Services page is PUBLIC */}
-        <Route path="/services" element={<ServicesCrudApp />} />
-
-        {/* 👑 Admin Routes */}
         <Route
           path="/admin/dashboard"
           element={
@@ -99,6 +100,7 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/admin/bookings"
           element={
@@ -108,11 +110,8 @@ function AppRoutes() {
           }
         />
 
-        {/* Redirect /admin → dashboard */}
-        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Layout>
   );
